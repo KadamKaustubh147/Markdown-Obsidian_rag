@@ -10,7 +10,8 @@ from langchain_postgres import PGVector
 
 from langchain_text_splitters.markdown import MarkdownTextSplitter
 
-from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.messages import SystemMessage,HumanMessage, AIMessage
 
 from langchain_core.runnables import RunnablePassthrough
 
@@ -51,7 +52,38 @@ vectorstore = PGVector.from_documents(
 retriever = vectorstore.as_retriever(search_kwargs={'k': 3})
 
 model = ChatGroq(
-    temperature=0.5,
-    model_name='gemma2-9b-it'
+    temperature=1,
+    model_name='llama-3.3-70b-versatile'
 )
 
+
+# chat_history --> store in DB after user clicks of the chat, but in new chat bring in the array and use array only ---> RAM
+
+# probably change DB put everything to sqlite
+
+# if user asked retrieve the document
+
+
+chat_history = [
+    SystemMessage(content='''
+You are a helpful and intelligent assistant integrated with an Obsidian-based knowledge management system.
+The user may query based on their personal Obsidian vault, which includes markdown notes organized into folders.
+If no relevant Obsidian documents are found, respond with:
+"No relevant Obsidian files found."
+Then ask the user if they would like to continue the conversation in a general sense, without using the context of Obsidian.
+''')
+]
+
+session = True
+
+while session:
+    user_input = input("You: ")
+    chat_history.append(HumanMessage(content=user_input))
+    if user_input == "exit":
+        session = False
+        break
+    result = model.invoke(chat_history)
+    chat_history.append(AIMessage(content=result.content))
+    print("AI", result.content)
+    
+print(chat_history)
