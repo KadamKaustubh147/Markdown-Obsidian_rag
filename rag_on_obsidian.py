@@ -22,7 +22,9 @@ from langchain_core.output_parsers import StrOutputParser
 
 # D:\Obsidian-vault\Obsidian Notes
 
-loader = ObsidianLoader("/mnt/d/Obsidian-vault/Obsidian Notes")
+# loader = ObsidianLoader("C:\Users\kaust\OneDrive\Documents\Obsidian vaults\Obsidian_datascience")
+
+loader = ObsidianLoader('/mnt/c/Users/kaust/OneDrive/Documents/Obsidian vaults/Obsidian_datascience/')
 
 documents=loader.load()
 
