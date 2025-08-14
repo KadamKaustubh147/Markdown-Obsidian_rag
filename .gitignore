@@ -3,3 +3,9 @@
 .env
 
 .venv
+
+chroma_db/
+
+chroma_db_custom_loader/
+
+__pycache__/
